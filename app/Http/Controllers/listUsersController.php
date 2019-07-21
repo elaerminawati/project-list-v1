@@ -17,6 +17,8 @@ class listUsersController extends Controller
                           ->join('roles', 'roles.id', 'users.role_id')
                           ->select(DB::raw("users.name as name, users.email as email, project_lists.git_link as git_link, roles.name as role"))
                           ->get();
-        return view('listUsers', ['datalistusers' => $data_list_users]);
+        $roles = DB::table('roles')
+                 ->get();
+        return view('listUsers', ['datalistusers' => $data_list_users, 'roles' => $roles]);
     }
 }

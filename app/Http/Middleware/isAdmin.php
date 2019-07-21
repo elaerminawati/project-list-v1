@@ -23,9 +23,9 @@ class isAdmin
                       ->where([
                           ["users.id", Auth::id()]
                       ])
-                      ->select("roles.name")
+                      ->select(DB::raw('roles.name as role'))
                       ->first();
-        if($check_role->name == "Admin"){
+        if($check_role->role == "Admin"){
             return $next($request);
         }else{
             return abort(404, "Oopss!! Pages Not Found");

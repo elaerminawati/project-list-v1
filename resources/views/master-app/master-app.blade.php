@@ -64,7 +64,7 @@
 							</figure>
 							<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@JSOFT.com">
 								<span class="name">{{ $userdata->username }}</span>
-								@if($userdata->role = "Admin")
+								@if($userdata->role == "Admin")
 									<span class="role">Administrator</span>
 								@else
 									<span class="role">User</span>
@@ -127,6 +127,7 @@
 											<span>GITHUB</span>
 										</a>
 									</li>
+									@if($userdata->role == "Admin")
 									<li class="nav-parent">
 										<a>
 											<i class="fa fa-tasks" aria-hidden="true"></i>
@@ -145,6 +146,7 @@
 											</li>
 										</ul>
 									</li>
+									@endif
 								</ul>
 							</nav>
 						</div>

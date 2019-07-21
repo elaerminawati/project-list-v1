@@ -45,9 +45,9 @@ View::composer(['master-app.master-app'], function($view){
     $view->with(['userdata' => $user_login, 'git_data' => $git_data->count()]);
 });
 //Login Activities List
-Route::get('/login-activities', 'loginActivitiesController@index')->name('login-activities');
+Route::get('/login-activities', 'loginActivitiesController@index')->name('login-activities')->middleware("isAdmin");
 //list users for admin role
-Route::get('/list-users', 'listUsersController@index')->name('list-users');
+Route::get('/list-users', 'listUsersController@index')->name('list-users')->middleware("isAdmin");
 
 Route::get('/repository', 'gitHubApiController@index')->name('repository');
 
