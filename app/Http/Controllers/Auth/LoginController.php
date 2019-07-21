@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use App\Rules\EmailValidator;
+use Illuminate\Http\Request;
+use App\login_activities;
+use Jenssegers\Agent\Agent;
 class LoginController extends Controller
 {
     /*
@@ -25,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/github-setting';
 
     /**
      * Create a new controller instance.
@@ -36,4 +39,43 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    public function ShowFormLogin(){
+        dd(\Auth::id());
+        return view('Auth.login');
+    }
+
+    protected function ValidateLogin(Request $req){
+        $this->validate($req, [
+            $this->username() => ['required', 'string', new EmailValidator],
+            'password' => 'required|string',
+        ]);
+    }
+
+    protected function authenticated(Request $req, $user){
+        $agent = new Agent;
+        $platform = $agent->platform();
+        $version_platform = $agent->version($platform);
+        if($agent->isDesktop()){
+            $type = "Desktop";
+        }else{
+            $type = "Mobile";
+        }
+
+        $browser = $agent->browser();
+        $version_browser = $agent->version($browser);
+
+        $ip_address = \Request::getClientIp();
+        $login_activities = login_activities::create([
+            'user_id' => \Auth::id(),
+            'ip_address' => $ip_address,
+            'platform_type' => $type,
+            'platform_name' => $platform,
+            'platform_version' => $version_platform,
+            'browser_name' => $browser,
+            'browser_version' => $version_browser
+        ]);
+    }
+
+
 }

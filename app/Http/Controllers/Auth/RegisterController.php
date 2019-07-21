@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use App\Jobs\SendEmailJob;
 
 class RegisterController extends Controller
 {
@@ -28,7 +32,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.
@@ -46,6 +50,12 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
+    
+    //show registration form
+    public function ShowRegistrationForm(){
+        return view('Auth.register');
+    }
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -63,10 +73,39 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $getRole = DB::table('roles')->where([['name', 'User']]);
+        if($getRole->get()->count() > 0){
+            $role = $getRole->first()->id;
+            //create user
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role_id' => $role,
+                'evc' => false,
+                'evc_token' => str_random(50)
+            ]);
+        }else{
+            $user = null;
+        }
+
+        return $user;
+    }
+
+    //for all register action
+    public function register(Request $req){
+        $this->validator($req->all())->validate();
+
+        event(new Registered($user = $this->create($req->all())));
+
+        return $this->registered($req, $user, null)
+        ?: redirect($this->redirectPath());
+    }
+
+    //for send email then redirect to route login
+    protected function registered(Request $req, $user){
+        SendEmailJob::dispatch($user);
+        $message = "We've sent a verification link to your email";
+        return redirect()->route('login')->withSuccess($message)->with('user', $user);
     }
 }

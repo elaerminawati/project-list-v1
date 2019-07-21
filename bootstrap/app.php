@@ -25,7 +25,6 @@ $app = new Illuminate\Foundation\Application(
 | incoming requests to this application from both the web and CLI.
 |
 */
-
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
     App\Http\Kernel::class
@@ -40,6 +39,29 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+// $app->singleton('Github\Client', function () {
+//     $client = new Github\Client();
+//     dd(Auth::id());
+//     $gitdata = DB::table("project_lists")->where([['user_id', Auth::id()]]);
+//         if($gitdata->get()->count() > 0 ){
+//             $gitdataapi = $gitdata->first();
+//             $token = Crypt::decryptString($gitdataapi->git_token);
+    
+//             if (!isset($token)) {
+//             dd("Github token is not set.");
+//             }
+        
+//             $client->authenticate($gitdataapi->git_email, Crypt::decryptString($gitdataapi->git_password), Github\Client::AUTH_HTTP_PASSWORD);
+//             //$client->authenticate($token, null, Github\Client::AUTH_HTTP_TOKEN);
+//         }else{
+//             dd("DATA GIT NOT FOUND");
+//         }
+        
+    
+//         return $client;
+// });
+  
 
 /*
 |--------------------------------------------------------------------------
