@@ -82,8 +82,11 @@ class RegisterController extends Controller
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'role_id' => $role,
-                'evc' => false,
+                'evc' => true,
                 'evc_token' => str_random(50)
+            ]);
+            DB::table('project_lists')->insert([
+                ['user_id' => $user->id, 'git_email' => $data['email'], 'git_link' => "", 'git_password' => "", 'git_token' => "", 'git_status' => '0']
             ]);
         }else{
             $user = null;

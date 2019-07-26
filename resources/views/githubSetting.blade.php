@@ -35,18 +35,32 @@
                     <input class="form-control" type="text" name="gitlink" value="{{ $gitdata->git_link }}" id="gitlink" data-plugin-maxlength maxlength="255" required />
 				</div>
 			</div>
-            <!-- GIT PASSWORD -->
-            <div class="form-group">
+             <!-- GIT PASSWORD -->
+             <div class="form-group">
 			<label class="col-md-3 control-label" for="textareaDefault">GIT PASSWORD</label>
 			    <div class="col-md-6">
-                    <input class="form-control" type="password" name="gitpassword" value="{{ Crypt::decryptString($gitdata->git_password) }}" id="gitpassword" required />
+                    <?php
+                        if($gitdata->git_password !== ""){
+                            $git_password = Crypt::decryptString($gitdata->git_password);
+                        }else{
+                            $git_password = "";
+                        }
+                    ?>
+                    <input class="form-control" type="password" name="gitpassword" value="{{ $git_password }}" id="gitpassword" required />
                 </div>
 			</div>
             <!-- GIT TOKEN -->
             <div class="form-group">
 			<label class="col-md-3 control-label" for="textareaDefault">GIT TOKEN</label>
 			    <div class="col-md-6">
-                    <input class="form-control" type="text" name="gittoken" id="gittoken" value="{{ Crypt::decryptString($gitdata->git_token) }}"  data-plugin-maxlength maxlength="255" required />
+                    <?php
+                        if($gitdata->git_token !== ""){
+                            $git_token= Crypt::decryptString($gitdata->git_token);
+                        }else{
+                            $git_token = "";
+                        }
+                    ?>
+                    <input class="form-control" type="text" name="gittoken" id="gittoken" value="{{ $git_token }}"  data-plugin-maxlength maxlength="255" required />
 				</div>
 			</div>
             <!-- GIT STATUS -->
